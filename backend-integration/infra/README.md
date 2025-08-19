@@ -33,7 +33,11 @@ App settings are defined in `main.parameters.json`:
 
 ## Environment Variables
 
-Set these in [.azure](../.azure) environment folder before running `azd up`:
+Run `azd up` and follow the prompt to set the below:
 
 - `AZURE_ENV_NAME`: Environment name (becomes resource group name)
 - `AZURE_LOCATION`: Azure region (e.g., `eastus`)
+- `AZURE_SUBSCRIPTION_ID`: Azure subscription id
+
+Please beware that the above variables will be used to form the globally unique
+azure function app name.
