@@ -1,0 +1,14 @@
+#!/bin/bash
+# needed for local testing
+
+export APP_DOMAIN=""
+# API key for the backend endpoints authentication
+export API_KEY=""
+
+
+# Shopify API configuration
+export SHOPIFY_API_KEY=""
+export SHOPIFY_API_ACCESS_TOKEN=""
+export SHOPIFY_API_SECRET=""
+export SHOPIFY_STORE_NAME=""
+

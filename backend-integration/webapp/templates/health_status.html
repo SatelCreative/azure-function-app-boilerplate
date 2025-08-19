@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ app_name }}</title>
+    <title>Connections</title>
+</head>
+
+<body>
+    <h1>{{ app_name }} - {{ version }}</h1>
+    <ol>
+        {% for service in service_list %}
+        <h3>Name: {{ service['name'] }}</h3>
+        <p>Connected: {{ service['is_ok'] }}</p>
+        <p>Connection Speed: {{ service['speed_ms'] }} ms</p>
+        {% endfor %}
+    </ol>
+</body>
+
+</html>

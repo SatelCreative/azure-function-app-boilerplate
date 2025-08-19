@@ -1,0 +1,10 @@
+.git*
+.vscode
+local.settings.json
+test
+tests/*
+.venv
+pyproject.toml
+poetry.lock
+config.sh.example
+azure.yaml

@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
+    "APP_DOMAIN": "somedev.com",
+    "API_KEY": "some secret",
+    "SHOPIFY_STORE_NAME": "store-name",
+    "SHOPIFY_API_KEY": "shopify-api-key",
+    "SHOPIFY_API_ACCESS_TOKEN": "shopify-access-token",
+    "SHOPIFY_API_SECRET": "shopify-api-secret",
+  }
+}
