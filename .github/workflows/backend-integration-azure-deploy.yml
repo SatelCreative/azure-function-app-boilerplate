@@ -5,8 +5,10 @@ on:
   push:
     branches:
       - main
+      - "**"
     paths:
       - 'backend-integration/**'
+      - '.github/workflows/backend-integration-azure-deploy.yml'
 
 # GitHub Actions workflow to deploy to Azure using azd
 # To configure required secrets for connecting to Azure, simply run `azd pipeline config`
@@ -36,6 +38,7 @@ jobs:
           with:       
             github-runner-token: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }} #Should have access to manage runner
             org-name: SatelCreative
+            
     build:
       needs: [self-hosted-status]
       timeout-minutes: 10
