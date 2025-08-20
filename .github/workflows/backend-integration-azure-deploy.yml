@@ -38,7 +38,7 @@ jobs:
           with:       
             github-runner-token: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }} #Should have access to manage runner
             org-name: SatelCreative
-            
+
     build:
       needs: [self-hosted-status]
       timeout-minutes: 10
@@ -53,8 +53,8 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v4
 
-        - name: Install azd
-          uses: Azure/setup-azd@v2.0.0
+        # - name: Install azd
+        #   uses: Azure/setup-azd@v2.0.0
 
         - name: Log in with Azure (Federated Credentials)
           if: ${{ env.AZURE_CLIENT_ID != '' }}
