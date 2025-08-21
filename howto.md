@@ -212,8 +212,6 @@ Once the app has been created on Azure, you'll need to add the following environ
 - `AZURE_CLIENT_ID`
 - `AZURE_TENANT_ID` 
 - `AZURE_SUBSCRIPTION_ID`
-- `AZURE_ENV_NAME` (should match your workflow environment name) 
-
 
 Once the app has been created on Azure, in order to add the ENV variables
 This boilerplate provides a production-ready foundation for building Azure
