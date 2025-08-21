@@ -207,11 +207,13 @@ az role assignment list \
 
 ### Environment Variables
 
-Once the app has been created on Azure, you'll need to add the following environment variables to your GitHub repository secrets:
+Once the app has been created on Azure, you'll need to add the following environment variables to your GitHub repository variables/secrets:
 
-- `AZURE_CLIENT_ID`
-- `AZURE_TENANT_ID` 
-- `AZURE_SUBSCRIPTION_ID`
+- `<APP_NAME>_CLIENT_ID`
+- `<APP_NAME>_TENANT_ID` 
+- `<APP_NAME>_SUBSCRIPTION_ID`
+- `<APP_NAME>_ENV_NAME`
+- `<APP_NAME>_LOCATION`
 
 This boilerplate provides a production-ready foundation for building Azure
 Function-based integrations with proper monitoring, deployment pipelines, and
