@@ -17,14 +17,14 @@ concurrency:
   
 
 jobs:
-    backend-integration-dev: 
-        uses: ./.github/workflows/lib-azure-deploy.yml
-        with:
-          work-dir: backend-integration
-          environment: ${{ vars.BACKEND_INTEGRATION_ENV_NAME }}
-        secrets:
-          SELF_HOSTED_RUNNER_TOKEN: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }}
-          AZURE_CLIENT_ID: ${{ vars.BACKEND_INTEGRATION_CLIENT_ID }}
-          AZURE_TENANT_ID: ${{ vars.BACKEND_INTEGRATION_TENANT_ID }}
-          AZURE_SUBSCRIPTION_ID: ${{ vars.BACKEND_INTEGRATION_SUBSCRIPTION_ID }}
-          AZURE_LOCATION: ${{ vars.BACKEND_INTEGRATION_LOCATION }}
+  backend-integration-dev: 
+    uses: ./.github/workflows/lib-azure-deploy.yml
+    with:
+      work-dir: backend-integration
+      environment: ${{ vars.BACKEND_INTEGRATION_ENV_NAME }}
+    secrets:
+      SELF_HOSTED_RUNNER_TOKEN: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }}
+      AZURE_CLIENT_ID: ${{ vars.BACKEND_INTEGRATION_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.BACKEND_INTEGRATION_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.BACKEND_INTEGRATION_SUBSCRIPTION_ID }}
+      AZURE_LOCATION: ${{ vars.BACKEND_INTEGRATION_LOCATION }}
