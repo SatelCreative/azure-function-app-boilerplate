@@ -24,7 +24,6 @@ on:
       AZURE_LOCATION:
         required: true
   
-
 permissions:
   id-token: write
   contents: read
@@ -101,7 +100,3 @@ jobs:
             cd ${{ inputs.work-dir }}
             azd env new $AZURE_ENV_NAME --location $AZURE_LOCATION --subscription $AZURE_SUBSCRIPTION_ID --no-prompt
             azd deploy --no-prompt
-          env:
-            AZURE_ENV_NAME: ${{ inputs.environment }}
-            AZURE_LOCATION: ${{ secrets.AZURE_LOCATION }}
-            AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
