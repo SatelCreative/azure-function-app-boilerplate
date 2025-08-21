@@ -43,7 +43,7 @@ jobs:
       needs: [self-hosted-status]
       timeout-minutes: 10
       runs-on: ${{ contains(needs.self-hosted-status.outputs.runner-status, 'online') && 'self-hosted' || 'ubuntu-latest' }}
-      environment: dev
+      environment: "backend-integration-dev"
       env:
         AZURE_CLIENT_ID: ${{ vars.BACKEND_INTEGRATION_CLIENT_ID }}
         AZURE_TENANT_ID: ${{ vars.BACKEND_INTEGRATION_TENANT_ID }}
