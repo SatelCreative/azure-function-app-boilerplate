@@ -23,6 +23,7 @@ jobs:
         uses: ./.github/workflows/lib-azure-deploy.yml
         with:
           work-dir: backend-integration
+          environment: ${{ vars.BACKEND_INTEGRATION_ENV_NAME }}
         secrets:
           SELF_HOSTED_RUNNER_TOKEN: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }}
           AZURE_CLIENT_ID: ${{ vars.BACKEND_INTEGRATION_CLIENT_ID }}
