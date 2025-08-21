@@ -100,4 +100,3 @@ jobs:
             AZURE_LOCATION: "westus2"
             AZURE_SUBSCRIPTION_ID: ${{ vars.BACKEND_INTEGRATION_SUBSCRIPTION_ID }}
       
-test cl
