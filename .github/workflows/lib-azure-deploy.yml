@@ -47,7 +47,7 @@ jobs:
       needs: [self-hosted-status]
       timeout-minutes: 10
       runs-on: ${{ contains(needs.self-hosted-status.outputs.runner-status, 'online') && 'self-hosted' || 'ubuntu-latest' }}
-      environment: ${{ secrets.AZURE_ENV_NAME }}
+      environment: ${{ inputs.environment }}
       env:
         AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
