@@ -141,6 +141,81 @@ cd shopify-integration/
 azd up
 ```
 
+
+## Azure DevOps Setup
+
+### Prerequisites
+
+Before setting up Azure DevOps integration, you'll need to gather the following information:
+
+- **Azure Subscription ID**: Found in the [Azure Portal Subscriptions page](https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBladeV2)
+- **Azure Tenant ID**: Available after app registration
+- **Azure Client ID**: Generated during app registration
+
+### Step-by-Step Setup
+
+#### 1. Get Azure Subscription ID
+
+Navigate to the [Azure Portal Subscriptions page](https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBladeV2) and copy your subscription ID.
+
+#### 2. Register Azure Application
+
+1. Go to the [Azure App Registrations page](https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade)
+2. Click **"New registration"**
+3. Provide a name for your application
+4. Select the appropriate account types
+5. Click **"Register"**
+
+This will provide you with:
+- **AZURE_CLIENT_ID** (Application ID)
+- **AZURE_TENANT_ID** (Directory ID)
+
+#### 3. Configure Federated Credentials
+
+1. In your app registration, navigate to **"Certificates & secrets"**
+2. Click on **"Federated credentials"** tab
+3. Click **"Add credential"**
+4. Configure the federated credential with:
+   - **Entity type**: GitHub Actions
+   - **Repository**: `your-org/your-repo`
+   - **Environment**: `backend-integration-dev` (must match your workflow environment)
+   - **Branch**: `main` (or your default branch)
+
+> **Important**: The environment name must match exactly with the environment specified in your GitHub workflows. See the [workflow configuration](https://github.com/SatelCreative/azure-function-app-boilerplate/blob/4149c2b6f838b8b2b9ad6a091120674572347ad1/.github/workflows/backend-integration-azure-deploy.yml#L46-L47) for reference.
+
+#### 4. Assign Contributor Role
+
+The registered app needs contributor permissions for your Azure subscription. Run the following command locally:
+
+```bash
+az role assignment create \
+  --assignee "AZURE_CLIENT_ID" \
+  --role "Contributor" \
+  --scope "/subscriptions/AZURE_SUBSCRIPTION_ID"
+```
+
+**Verification**: To verify the role assignment, run:
+
+```bash
+az role assignment list \
+  --assignee "AZURE_CLIENT_ID" \
+  --scope "/subscriptions/AZURE_SUBSCRIPTION_ID" \
+  --output table
+```
+
+> **Note**: Make sure you're logged into the correct Azure organization before running these commands.
+
+### Environment Variables
+
+Once the app has been created on Azure, you'll need to add the following environment variables to your GitHub repository secrets:
+
+- `AZURE_CLIENT_ID`
+- `AZURE_TENANT_ID` 
+- `AZURE_SUBSCRIPTION_ID`
+- `AZURE_ENV_NAME` (should match your workflow environment name) 
+
+
+Once the app has been created on Azure, in order to add the ENV variables
 This boilerplate provides a production-ready foundation for building Azure
 Function-based integrations with proper monitoring, deployment pipelines, and
 infrastructure management.
