@@ -1,0 +1,100 @@
+name: Deploys to Azure Function App
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      work-dir:
+        required: true
+        type: string 
+
+    secrets:
+      SELF_HOSTED_RUNNER_TOKEN: 
+        required: true   
+      AZURE_CLIENT_ID: 
+          required: true
+      AZURE_TENANT_ID: 
+        required: true
+      AZURE_SUBSCRIPTION_ID: 
+        required: true
+      AZURE_ENV_NAME:
+        required: true
+      AZURE_LOCATION:
+        required: true
+  
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+    self-hosted-status:
+      runs-on: ubuntu-latest
+      timeout-minutes: 5
+      outputs:
+        runner-status: ${{ steps.runnerstatus.outputs.status }}
+      steps:
+        - name: Check runner status
+          id: runnerstatus
+          uses: SatelCreative/satel-gh-runner-check@1.0.3
+          with:       
+            github-runner-token: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }} #Should have access to manage runner
+            org-name: SatelCreative
+
+    build:
+      needs: [self-hosted-status]
+      timeout-minutes: 10
+      runs-on: ${{ contains(needs.self-hosted-status.outputs.runner-status, 'online') && 'self-hosted' || 'ubuntu-latest' }}
+      environment: ${{ vars.AZURE_ENV_NAME }}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        # - name: Install azd
+        #   uses: Azure/setup-azd@v2.0.0
+
+        - name: Log in with Azure (Federated Credentials)
+          if: ${{ env.AZURE_CLIENT_ID != '' }}
+          run: |
+            echo "Using client ID: $AZURE_CLIENT_ID"
+            azd auth login \
+              --client-id "$AZURE_CLIENT_ID" \
+              --federated-credential-provider "github" \
+              --tenant-id "$AZURE_TENANT_ID"
+
+
+        - name: Log in with Azure (Client Credentials)
+          if: ${{ env.AZURE_CREDENTIALS != '' }}
+          run: |
+            $info = $Env:AZURE_CREDENTIALS | ConvertFrom-Json -AsHashtable;
+            Write-Host "::add-mask::$($info.clientSecret)"
+
+            azd auth login \
+              --client-id "$($info.clientId)" \
+              --client-secret "$($info.clientSecret)" \
+              --tenant-id "$($info.tenantId)"
+          env:
+            AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+
+        # Commented out to preserve existing application settings
+        # Uncomment when infrastructure changes are needed
+        #- name: Provision Infrastructure
+        #  run: |
+        #    cd backend-integration
+        #    azd provision --no-prompt
+        #  env:
+        #    AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+        #    AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+        #    AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+        - name: Deploy Application
+          run: |
+            cd ${{ inputs.work-dir }}
+            azd env new $AZURE_ENV_NAME --location $AZURE_LOCATION --subscription $AZURE_SUBSCRIPTION_ID --no-prompt
+            azd deploy --no-prompt
+          env:
+            AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+            AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+            AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
