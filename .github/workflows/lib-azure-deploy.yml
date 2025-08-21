@@ -48,6 +48,11 @@ jobs:
       timeout-minutes: 10
       runs-on: ${{ contains(needs.self-hosted-status.outputs.runner-status, 'online') && 'self-hosted' || 'ubuntu-latest' }}
       environment: ${{ vars.AZURE_ENV_NAME }}
+      env:
+        AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
       steps:
         - name: Checkout
           uses: actions/checkout@v4
