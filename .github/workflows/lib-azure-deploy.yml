@@ -19,8 +19,6 @@ on:
         required: true
       AZURE_SUBSCRIPTION_ID: 
         required: true
-      AZURE_ENV_NAME:
-        required: true
       AZURE_LOCATION:
         required: true
   
