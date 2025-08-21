@@ -43,7 +43,7 @@ jobs:
             github-runner-token: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }} #Should have access to manage runner
             org-name: SatelCreative
 
-    build:
+    build-and-deploy:
       needs: [self-hosted-status]
       timeout-minutes: 10
       runs-on: ${{ contains(needs.self-hosted-status.outputs.runner-status, 'online') && 'self-hosted' || 'ubuntu-latest' }}
