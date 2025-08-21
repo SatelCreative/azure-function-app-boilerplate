@@ -95,7 +95,7 @@ jobs:
             azd env new $AZURE_ENV_NAME --location $AZURE_LOCATION --subscription $AZURE_SUBSCRIPTION_ID --no-prompt
             azd deploy --no-prompt
           env:
-            AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
-            AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-            AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+            AZURE_ENV_NAME: dev
+            AZURE_LOCATION: "westus2"
+            AZURE_SUBSCRIPTION_ID: ${{ vars.BACKEND_INTEGRATION_SUBSCRIPTION_ID }}
       
