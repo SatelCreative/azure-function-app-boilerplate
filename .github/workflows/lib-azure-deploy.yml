@@ -1,0 +1,82 @@
+name: Deploys to Azure Function App
+
+on:
+  workflow_call:
+    inputs:
+      work-dir:
+        required: true
+        type: string 
+      environment:
+        required: true
+        type: string
+
+    secrets:
+      SELF_HOSTED_RUNNER_TOKEN: 
+        required: true   
+      AZURE_CLIENT_ID: 
+          required: true
+      AZURE_TENANT_ID: 
+        required: true
+      AZURE_SUBSCRIPTION_ID: 
+        required: true
+      AZURE_LOCATION:
+        required: true
+  
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+    self-hosted-status:
+      runs-on: ubuntu-latest
+      timeout-minutes: 5
+      outputs:
+        runner-status: ${{ steps.runnerstatus.outputs.status }}
+      steps:
+        - name: Check runner status
+          id: runnerstatus
+          uses: SatelCreative/satel-gh-runner-check@1.0.3
+          with:       
+            github-runner-token: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }} #Should have access to manage runner
+            org-name: SatelCreative
+
+    build-and-deploy:
+      needs: [self-hosted-status]
+      timeout-minutes: 10
+      runs-on: ${{ contains(needs.self-hosted-status.outputs.runner-status, 'online') && 'self-hosted' || 'ubuntu-latest' }}
+      environment: ${{ inputs.environment }}
+      env:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        AZURE_LOCATION: ${{ secrets.AZURE_LOCATION }}
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Install azd
+          if: ${{ runner.os == 'Linux' && runner.name == 'GitHub Actions' }}
+          uses: Azure/setup-azd@v2.0.0
+
+        - name: Log in with Azure (Federated Credentials)
+          if: ${{ env.AZURE_CLIENT_ID != '' }}
+          run: |
+            echo "Using client ID: $AZURE_CLIENT_ID"
+            azd auth login \
+              --client-id "$AZURE_CLIENT_ID" \
+              --federated-credential-provider "github" \
+              --tenant-id "$AZURE_TENANT_ID"
+
+        # Commented out to preserve existing application settings
+        # Uncomment when infrastructure changes are needed
+        #- name: Provision Infrastructure
+        #  run: |
+        #    cd ${{ inputs.work-dir }}
+        #    azd provision --no-prompt
+      
+
+        - name: Deploy Application
+          run: |
+            cd ${{ inputs.work-dir }}
+            azd env new $AZURE_ENV_NAME --location $AZURE_LOCATION --subscription $AZURE_SUBSCRIPTION_ID --no-prompt
+            azd deploy --no-prompt
