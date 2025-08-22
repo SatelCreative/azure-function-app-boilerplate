@@ -54,8 +54,9 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v4
 
-        # - name: Install azd
-        #   uses: Azure/setup-azd@v2.0.0
+        - name: Install azd
+          if: ${{ runner.os == 'Linux' && runner.name == 'GitHub Actions' }}
+          uses: Azure/setup-azd@v2.0.0
 
         - name: Log in with Azure (Federated Credentials)
           if: ${{ env.AZURE_CLIENT_ID != '' }}
