@@ -1,0 +1,48 @@
+{
+  "name": "Azure Function App Boilerplate",
+  "description": "A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI, and complete infrastructure as code. This template provides a production-ready foundation for building serverless applications with Azure Functions.",
+  "author": "Azure Function App Template",
+  "repositoryPath": ".",
+  "tags": [
+    "azure",
+    "functions", 
+    "python",
+    "fastapi",
+    "shopify",
+    "bicep",
+    "serverless",
+    "infrastructure",
+    "template"
+  ],
+  "assets": {
+    "icon": "assets/icon.png",
+    "preview": "assets/preview.png"
+  },
+  "readme": "README.md",
+  "quickStart": {
+    "title": "Quick Start",
+    "description": "Get your Azure Function App up and running in minutes",
+    "steps": [
+      "Clone this template: `azd init --template <your-github-username>/azure-function-app-boilerplate`",
+      "Navigate to the project: `cd your-project-name`", 
+      "Configure your environment: Copy `backend-integration/config.sh.example` to `config.sh` and update values",
+      "Deploy to Azure: `azd up`"
+    ]
+  },
+  "features": [
+    "Azure Functions with Python 3.12",
+    "FastAPI integration for modern API development", 
+    "Shopify integration with webhook support",
+    "Complete Infrastructure as Code with Bicep",
+    "Application Insights monitoring",
+    "GitHub Actions CI/CD pipeline",
+    "Local development support with Poetry",
+    "Comprehensive testing setup"
+  ],
+  "prerequisites": [
+    "Azure CLI",
+    "Azure Developer CLI (azd)",
+    "Python 3.12+",
+    "Poetry (for local development)"
+  ]
+}
