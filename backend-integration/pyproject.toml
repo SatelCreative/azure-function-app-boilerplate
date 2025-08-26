@@ -1,5 +1,5 @@
 [project]
-name = "backend-integration"
+name = "{{appName}}"
 version = "0.1.0"
 description = ""
 

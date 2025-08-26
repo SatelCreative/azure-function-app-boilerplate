@@ -3,6 +3,7 @@
   "description": "A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI, and complete infrastructure as code. This template provides a production-ready foundation for building serverless applications with Azure Functions.",
   "author": "Azure Function App Template",
   "repositoryPath": ".",
+
   "tags": [
     "azure",
     "functions", 
@@ -25,7 +26,8 @@
     "steps": [
       "Clone this template: `azd init --template <your-github-username>/azure-function-app-boilerplate`",
       "Navigate to the project: `cd your-project-name`", 
-      "Configure your environment: Copy `backend-integration/config.sh.example` to `config.sh` and update values",
+      "Rename the integration: Run `./rename-integration.sh your-integration-name`",
+      "Configure your environment: Copy `your-integration-name/config.sh.example` to `config.sh` and update values",
       "Deploy to Azure: `azd up`"
     ]
   },
