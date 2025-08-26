@@ -35,7 +35,7 @@ async def get_health_details(request: Request):
         {
             'request': request,
             'service_list': [status.model_dump() for status in service_list],
-            'app_name': 'Backend Integration',
+            'app_name': '{{appName}}',
             'version': __version__,
         },
     )

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "template": {
+    "name": "azure-function-app-boilerplate",
+    "description": "A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI, and complete infrastructure as code",
+    "author": "Azure Function App Template",
+    "repositoryPath": ".",
+    "tags": [
+      "azure",
+      "functions",
+      "python",
+      "fastapi",
+      "shopify",
+      "bicep",
+      "template"
+    ],
+    "metadata": {
+      "type": "template",
+      "language": "python",
+      "azureServices": [
+        "Azure Functions",
+        "Application Insights",
+        "Storage Account",
+        "Log Analytics"
+      ]
+    }
+  }
+}

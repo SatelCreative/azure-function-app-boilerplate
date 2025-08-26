@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: azure-function-app-boilerplate
+metadata:
+  template: azure-function-app-boilerplate@1.0.0
+  author: Azure Function App Template
+  description: A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI, and complete infrastructure as code
+  
+services:
+  api:
+    project: ./backend-integration
+    language: py
+    host: function
+
+infra:
+  provider: bicep
+  path: ./backend-integration/infra
+
+pipeline:
+  provider: github-actions

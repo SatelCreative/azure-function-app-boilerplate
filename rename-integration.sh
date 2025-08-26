@@ -1,0 +1,128 @@
+#!/bin/bash
+
+# Rename Integration Script
+# This script helps you rename the backend-integration folder to your desired name
+# and updates all necessary configuration files
+
+set -e
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <new-integration-name>"
+    echo "Example: $0 shopify-integration"
+    exit 1
+fi
+
+NEW_NAME="$1"
+
+# Validate the name format
+if ! [[ "$NEW_NAME" =~ ^[a-z][a-z0-9-]*[a-z0-9]$ ]]; then
+    echo "Error: Name must start with a letter, contain only lowercase letters, numbers, and hyphens, and end with a letter or number"
+    exit 1
+fi
+
+echo "Renaming integration from 'backend-integration' to '$NEW_NAME'..."
+
+# 1. Rename the main folder
+if [ -d "backend-integration" ]; then
+    mv backend-integration "$NEW_NAME"
+    echo "✓ Renamed folder to $NEW_NAME/"
+else
+    echo "Warning: backend-integration folder not found"
+fi
+
+# 2. Update azure.yaml
+if [ -f "azure.yaml" ]; then
+    sed -i.bak "s|./backend-integration|./$NEW_NAME|g" azure.yaml
+    rm azure.yaml.bak
+    echo "✓ Updated azure.yaml"
+fi
+
+# 3. Update pyproject.toml
+if [ -f "$NEW_NAME/pyproject.toml" ]; then
+    sed -i.bak "s|name = \"{{appName}}\"|name = \"$NEW_NAME\"|g" "$NEW_NAME/pyproject.toml"
+    rm "$NEW_NAME/pyproject.toml.bak"
+    echo "✓ Updated $NEW_NAME/pyproject.toml"
+fi
+
+# 4. Update README.md and webapp files in the integration folder
+if [ -f "$NEW_NAME/README.md" ]; then
+    sed -i.bak "s|# {{appName}}|# $NEW_NAME|g" "$NEW_NAME/README.md"
+    sed -i.bak "s|\"{{appName}}\"|\"$NEW_NAME\"|g" "$NEW_NAME/README.md"
+    rm "$NEW_NAME/README.md.bak"
+    echo "✓ Updated $NEW_NAME/README.md"
+fi
+
+# Update webapp main.py app_name
+if [ -f "$NEW_NAME/webapp/main.py" ]; then
+    sed -i.bak "s|'{{appName}}'|'$NEW_NAME'|g" "$NEW_NAME/webapp/main.py"
+    rm "$NEW_NAME/webapp/main.py.bak"
+    echo "✓ Updated $NEW_NAME/webapp/main.py"
+fi
+
+# 5. Clean up any extra workflow files and rename/update main workflow files
+UPPER_NAME=$(echo "$NEW_NAME" | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
+
+# Remove any extra workflow files that shouldn't exist
+if [ -f ".github/workflows/new-app-azure-deploy.yml" ]; then
+    rm ".github/workflows/new-app-azure-deploy.yml"
+    echo "✓ Removed extra new-app deployment workflow"
+fi
+
+if [ -f ".github/workflows/new-app-azure-bicep-validate.yml" ]; then
+    rm ".github/workflows/new-app-azure-bicep-validate.yml"
+    echo "✓ Removed extra new-app validation workflow"
+fi
+
+if [ -f ".github/workflows/backend-integration-azure-deploy.yml" ]; then
+    # Update content first
+    sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-azure-deploy.yml"
+    sed -i.bak "s|BACKEND_INTEGRATION|${UPPER_NAME}|g" ".github/workflows/backend-integration-azure-deploy.yml"
+    sed -i.bak "s|Backend Integration|${NEW_NAME}|g" ".github/workflows/backend-integration-azure-deploy.yml"
+    rm ".github/workflows/backend-integration-azure-deploy.yml.bak"
+    
+    # Then rename file
+    mv ".github/workflows/backend-integration-azure-deploy.yml" ".github/workflows/$NEW_NAME-azure-deploy.yml"
+    echo "✓ Updated and renamed deployment workflow"
+fi
+
+if [ -f ".github/workflows/backend-integration-azure-bicep-validate.yml" ]; then
+    # Update content first
+    sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-azure-bicep-validate.yml"
+    sed -i.bak "s|Backend Integration|${NEW_NAME}|g" ".github/workflows/backend-integration-azure-bicep-validate.yml"
+    rm ".github/workflows/backend-integration-azure-bicep-validate.yml.bak"
+    
+    # Then rename file
+    mv ".github/workflows/backend-integration-azure-bicep-validate.yml" ".github/workflows/$NEW_NAME-azure-bicep-validate.yml"
+    echo "✓ Updated and renamed validation workflow"
+fi
+
+# 6. Update main README.md
+if [ -f "README.md" ]; then
+    sed -i.bak "s|backend-integration|$NEW_NAME|g" README.md
+    sed -i.bak "s|{{appName}}|$NEW_NAME|g" README.md
+    rm README.md.bak
+    echo "✓ Updated main README.md"
+fi
+
+# 7. Update azd-template.json
+if [ -f "azd-template.json" ]; then
+    sed -i.bak "s|backend-integration|$NEW_NAME|g" azd-template.json
+    sed -i.bak "s|{{appName}}|$NEW_NAME|g" azd-template.json
+    rm azd-template.json.bak
+    echo "✓ Updated azd-template.json"
+fi
+
+echo ""
+echo "🎉 Successfully renamed integration to '$NEW_NAME'!"
+echo ""
+echo "Next steps:"
+echo "1. cd $NEW_NAME/"
+echo "2. Update your Azure environment variables to use ${UPPER_NAME}_* prefix"
+echo "3. Run 'azd up' to deploy your integration"
+echo ""
+echo "Environment variables needed:"
+echo "- ${UPPER_NAME}_ENV_NAME"
+echo "- ${UPPER_NAME}_CLIENT_ID"
+echo "- ${UPPER_NAME}_TENANT_ID"
+echo "- ${UPPER_NAME}_SUBSCRIPTION_ID"
+echo "- ${UPPER_NAME}_LOCATION"

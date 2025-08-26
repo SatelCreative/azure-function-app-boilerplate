@@ -1,4 +1,4 @@
-# Backend Integration
+# {{appName}}
 
 ## Table of Contents
 
@@ -56,7 +56,7 @@ returns a status report with response times.
 - **Template:** `health_status.html`
 - **Context Variables:**
   - `service_list`: Array of service status objects
-  - `app_name`: "Backend Integration"
+  - `app_name`: "{{appName}}"
   - `version`: Current application version
 
 **Service Status Object Structure:**
