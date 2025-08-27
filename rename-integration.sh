@@ -99,18 +99,18 @@ if [ -f ".github/workflows/backend-integration-azure_bicep_validate.yml" ]; then
 fi
 
 # Handle the code validation and docs workflow
-if [ -f ".github/workflows/backend-integration-code_validation_and_docs copy.yml" ]; then
+if [ -f ".github/workflows/backend-integration-code_validation_and_docs.yml" ]; then
     # Update content first - replace all instances of backend-integration
-    sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
+    sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
     # Update the workflow name/title
-    sed -i.bak "s|Backend Integration - Checks & documentation|$NEW_NAME - Checks & documentation|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
-    sed -i.bak "s|Backend Integration|$NEW_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
+    sed -i.bak "s|Backend Integration - Checks & documentation|$NEW_NAME - Checks & documentation|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
+    sed -i.bak "s|Backend Integration|$NEW_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
     # Update any references to the reusable workflow file
-    sed -i.bak "s|backend-integration-dev-code_validation_and_docs.yml|$NEW_NAME-dev-code_validation_and_docs.yml|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
-    rm ".github/workflows/backend-integration-code_validation_and_docs copy.yml.bak"
+    sed -i.bak "s|backend-integration-dev-code_validation_and_docs.yml|$NEW_NAME-dev-code_validation_and_docs.yml|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
+    rm ".github/workflows/backend-integration-code_validation_and_docs.yml.bak"
     
     # Then rename file
-    mv ".github/workflows/backend-integration-code_validation_and_docs copy.yml" ".github/workflows/$NEW_NAME-code_validation_and_docs.yml"
+    mv ".github/workflows/backend-integration-code_validation_and_docs.yml" ".github/workflows/$NEW_NAME-code_validation_and_docs.yml"
     echo "✓ Updated and renamed code validation and docs workflow"
 fi
 
