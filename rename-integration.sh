@@ -69,6 +69,14 @@ if [ -f "$NEW_NAME/webapp/main.py" ]; then
     echo "✓ Updated $NEW_NAME/webapp/main.py"
 fi
 
+# Update generate_openapi_docs.py
+if [ -f "$NEW_NAME/generate_openapi_docs.py" ]; then
+    sed -i.bak "s|filename='backend-integration'|filename='$NEW_NAME'|g" "$NEW_NAME/generate_openapi_docs.py"
+    sed -i.bak "s|title='Backend Integration - API'|title='$NEW_NAME - API'|g" "$NEW_NAME/generate_openapi_docs.py"
+    rm "$NEW_NAME/generate_openapi_docs.py.bak"
+    echo "✓ Updated $NEW_NAME/generate_openapi_docs.py"
+fi
+
 # 5. Clean up any extra workflow files and rename/update main workflow files
 UPPER_NAME=$(echo "$NEW_NAME" | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
 
