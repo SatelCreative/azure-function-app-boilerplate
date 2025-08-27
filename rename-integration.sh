@@ -49,7 +49,9 @@ fi
 
 # 3. Update pyproject.toml
 if [ -f "$NEW_NAME/pyproject.toml" ]; then
+    # Replace either the original template syntax or the valid placeholder
     sed -i.bak "s|name = \"{{appName}}\"|name = \"$NEW_NAME\"|g" "$NEW_NAME/pyproject.toml"
+    sed -i.bak "s|name = \"app-name\"|name = \"$NEW_NAME\"|g" "$NEW_NAME/pyproject.toml"
     rm "$NEW_NAME/pyproject.toml.bak"
     echo "✓ Updated $NEW_NAME/pyproject.toml"
 fi

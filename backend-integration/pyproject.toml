@@ -1,11 +1,9 @@
 [project]
-name = "{{appName}}"
+name = "app-name"
 version = "0.1.0"
 description = ""
 
-authors = [
-    {name = "Satel Backend",email = "backend@satel.ca"}
-]
+authors = [{ name = "Satel Backend", email = "backend@satel.ca" }]
 requires-python = ">=3.12,<4.0"
 
 
@@ -14,19 +12,18 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-package-mode = false 
+package-mode = false
 
 
 [tool.poetry.dependencies]
-azure-functions= "1.23.0"
-fastapi= "0.116.1"
-httpx= "0.24.1"
-jinja2= "3.1.6"
-loguru= "0.7.3"
-pydantic= "2.11.7"
-pydantic_settings= "2.10.1"
-spylib= "0.10.5"
-
+azure-functions = "1.23.0"
+fastapi = "0.116.1"
+httpx = "0.24.1"
+jinja2 = "3.1.6"
+loguru = "0.7.3"
+pydantic = "2.11.7"
+pydantic_settings = "2.10.1"
+spylib = "0.10.5"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -73,26 +70,26 @@ line-length = 99
 
 [tool.ruff.lint]
 select = [
-# Mandatory    
-    "A",  # flake8-builtins
-    "B",  # flake8-bugbear
-    "C",  # flake8-comprehensions,  
-    "F",  # pyflakes,
-    "I",  # isort, 
-    "Q",  # flake8-quotes
-    "N",  # pep8-naming 
-    "S",  # flake8-bandit 
+    # Mandatory    
+    "A",     # flake8-builtins
+    "B",     # flake8-bugbear
+    "C",     # flake8-comprehensions,  
+    "F",     # pyflakes,
+    "I",     # isort, 
+    "Q",     # flake8-quotes
+    "N",     # pep8-naming 
+    "S",     # flake8-bandit 
     "ASYNC", # flake8-async
     "COM",   # flake8-commas 
     "T20",   # flake8-print
-    "YTT"    # flake8-2020
+    "YTT",   # flake8-2020
 ]
 ignore = [
-   "COM812",   # Trailing comma missing
-   "N815",     # Variable {name} in class scope should not be mixedCase
-   "S311",     # Standard pseudo-random 
-   "S101",     # Use of `assert` detected
-   "C419",     # Unnecessary list comprehension
+    "COM812", # Trailing comma missing
+    "N815",   # Variable {name} in class scope should not be mixedCase
+    "S311",   # Standard pseudo-random 
+    "S101",   # Use of `assert` detected
+    "C419",   # Unnecessary list comprehension
 ]
 [tool.ruff.lint.per-file-ignores]
 "**/{tests}/*" = ["S101"] # Use of assert detected
@@ -112,7 +109,13 @@ typing = "mypy ."
 testing = "pytest"
 
 setup-precommit = "pre-commit install"
-setup = ["setup-precommit"]  # Complete development setup
+setup = ["setup-precommit"]            # Complete development setup
 
 precommit-check = "bash -c 'if [ ! -f .git/hooks/pre-commit ]; then echo Installing pre-commit hooks...; pre-commit install; fi; pre-commit run --all-files'"
-codevalidation = ["linting", "formatting", "typing", "testing", "precommit-check"]
+codevalidation = [
+    "linting",
+    "formatting",
+    "typing",
+    "testing",
+    "precommit-check",
+]
