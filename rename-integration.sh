@@ -157,6 +157,7 @@ echo ""
 if [ -f "rename-integration.sh" ]; then
     rm "rename-integration.sh"
     rm -rf .git
+    rm README.md
     echo "✓ Removed rename-integration.sh and .git from $NEW_NAME/"
 fi
 
