@@ -22,6 +22,10 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
    ./rename-integration.sh <APP-NAME> <REPO-NAME>
    
    ```
+   > **Note**: After running the script, you'll need to 
+   manually move the files `.github` folder from your 
+   new integration directory back to the root of your project, 
+   then delete this empoty `.github` directory.
 
 2. **Configure your environment:**
    ```bash

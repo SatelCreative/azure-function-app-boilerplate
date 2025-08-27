@@ -144,9 +144,10 @@ fi
 
 echo ""
 # 8. Remove the rename script from the newly created folder
-if [ -f "$NEW_NAME/rename-integration.sh" ]; then
-    rm "$NEW_NAME/rename-integration.sh"
-    echo "✓ Removed rename-integration.sh from $NEW_NAME/"
+if [ -f "rename-integration.sh" ]; then
+    rm "rename-integration.sh"
+    rm -rf .git
+    echo "✓ Removed rename-integration.sh and .git from $NEW_NAME/"
 fi
 
 echo ""
