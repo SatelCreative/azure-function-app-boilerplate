@@ -100,10 +100,12 @@ fi
 
 # Handle the code validation and docs workflow
 if [ -f ".github/workflows/backend-integration-code_validation_and_docs copy.yml" ]; then
-    # Update content first
+    # Update content first - replace all instances of backend-integration
     sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
-    sed -i.bak "s|Backend Integration|${NEW_NAME}|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
-    sed -i.bak "s|Backend Integration|${NEW_NAME}|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
+    # Update the workflow name/title
+    sed -i.bak "s|Backend Integration - Checks & documentation|$NEW_NAME - Checks & documentation|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
+    sed -i.bak "s|Backend Integration|$NEW_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
+    # Update any references to the reusable workflow file
     sed -i.bak "s|backend-integration-dev-code_validation_and_docs.yml|$NEW_NAME-dev-code_validation_and_docs.yml|g" ".github/workflows/backend-integration-code_validation_and_docs copy.yml"
     rm ".github/workflows/backend-integration-code_validation_and_docs copy.yml.bak"
     
