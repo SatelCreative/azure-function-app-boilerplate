@@ -1,0 +1,109 @@
+name: Checks & documentation for the Backend apps
+
+on:
+  workflow_call:
+    inputs:
+      app-name:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+      work-dir:
+        required: true
+        type: string
+      repo-name:
+        required: true
+        type: string  
+      artifact-name:
+        default: 'xml-reports' 
+        required: false
+        type: string 
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+  
+jobs:
+  poetry-redoc:
+    timeout-minutes: 15
+    runs-on: samba
+    environment: ${{ inputs.environment }}
+    env:
+      PYTHON_VERSION: '3.12'
+    outputs:
+      REDOC_LINKS: ${{ steps.links.outputs.REDOC_LINKS }}  
+      COVERAGE_LINKS: ${{ steps.links.outputs.COVERAGE_LINKS }} 
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Poetry ci and doc generation
+        id: links
+        uses: SatelCreative/satel-python-poetry-ci-docgen@1.0.7
+        with:       
+          app-name: ${{ inputs.app-name }}
+          environment: ${{ inputs.environment }}
+          work-dir: ${{ inputs.work-dir }}
+          python-version: ${{ env.PYTHON_VERSION }}
+          portal-url: "https://portal.satel.ca/openapi"
+          artifact: ${{ inputs.artifact-name}}
+
+  generate-badges:
+    needs: [poetry-redoc]
+    timeout-minutes: 15
+    # Code coverage action doesn't run on self-hosted runner
+    runs-on: ubuntu-latest 
+    environment: ${{ inputs.environment }}
+    outputs:
+      BADGES: ${{ steps.badges.outputs.BADGES }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
+        
+      - name: Badges generation
+        id: badges
+        uses: SatelCreative/satel-badges-generation@1.0.3
+        with:       
+          app-name: ${{ inputs.app-name }}
+          environment: ${{ inputs.environment }}   
+          artifact: ${{ inputs.artifact-name}}
+            
+  update-pr-body: 
+    needs: [poetry-redoc, generate-badges]
+    timeout-minutes: 10
+    if: ${{ github.ref != 'refs/heads/main' }}
+    # myposter-de/update-pr-description action doesn't run on a self-hosted runner
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      REDOC_LINKS: ${{ needs.poetry-redoc.outputs.REDOC_LINKS }}
+      COVERAGE_LINKS: ${{ needs.poetry-redoc.outputs.COVERAGE_LINKS }}
+      BADGE: ${{ needs.generate-badges.outputs.BADGES }}
+      MAIN_BADGE: https://portal.satel.ca/openapi/${{ inputs.repo-name}}/${{ inputs.app-name }}-main.svg 
+      MAIN_COVERAGE: https://portal.satel.ca/openapi/coverage.html?repo=${{ inputs.repo-name}}&branch=main&app=${{ inputs.app-name }}
+    steps:
+        - name: PR body action
+          uses: SatelCreative/satel-update-pr-body@1.0.1
+          with:       
+            app-name: ${{ inputs.app-name }}
+            redoc-links: ${{ env.REDOC_LINKS }}
+            coverage-links: ${{ env.COVERAGE_LINKS }}
+            badge: ${{ env.BADGE }}
+            main-coverage: ${{ env.MAIN_COVERAGE }}
+            main-badge: ${{ env.MAIN_BADGE }}
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-main-badge: 
+    needs: [poetry-redoc, generate-badges]
+    timeout-minutes: 10
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: samba
+    environment: ${{ inputs.environment }}
+    env:
+      BADGE: ${{ needs.generate-badges.outputs.BADGES }}
+    steps:
+        - name: Upload main badge
+          uses: SatelCreative/satel-upload-main-badges@1.0.0
+          with:       
+            app-name: ${{ inputs.app-name }}
+            badge: ${{ env.BADGE }} 

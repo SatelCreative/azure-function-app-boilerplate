@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   backend-integration-dev: 
-    uses: ./.github/workflows/lib-azure-deploy.yml
+    uses: ./.github/workflows/lib-azure_deploy.yml
     with:
       work-dir: backend-integration
       environment: ${{ vars.BACKEND_INTEGRATION_ENV_NAME }}
