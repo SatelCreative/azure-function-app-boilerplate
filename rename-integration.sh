@@ -6,13 +6,22 @@
 
 set -e
 
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <new-integration-name>"
-    echo "Example: $0 shopify-integration"
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+    echo "Usage: $0 <new-integration-name> [repo-name]"
+    echo ""
+    echo "Parameters:"
+    echo "  new-integration-name: The name for your new integration (required)"
+    echo "  repo-name:            The repository name (optional, defaults to azure-function-app-boilerplate)"
+    echo ""
+    echo "Examples:"
+    echo "  $0 shopify-integration"
+    echo "  $0 shopify-integration my-custom-repo"
+    echo "  $0 payment-processor payment-backend"
     exit 1
 fi
 
 NEW_NAME="$1"
+REPO_NAME="${2:-azure-function-app-boilerplate}"  # Default to azure-function-app-boilerplate if not provided
 
 # Validate the name format
 if ! [[ "$NEW_NAME" =~ ^[a-z][a-z0-9-]*[a-z0-9]$ ]]; then
@@ -21,6 +30,7 @@ if ! [[ "$NEW_NAME" =~ ^[a-z][a-z0-9-]*[a-z0-9]$ ]]; then
 fi
 
 echo "Renaming integration from 'backend-integration' to '$NEW_NAME'..."
+echo "Using repository name: '$REPO_NAME'"
 
 # 1. Rename the main folder
 if [ -d "backend-integration" ]; then
@@ -107,6 +117,8 @@ if [ -f ".github/workflows/backend-integration-code_validation_and_docs.yml" ]; 
     sed -i.bak "s|Backend Integration|$NEW_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
     # Update any references to the reusable workflow file
     sed -i.bak "s|backend-integration-dev-code_validation_and_docs.yml|$NEW_NAME-dev-code_validation_and_docs.yml|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
+    # Update the repo-name parameter
+    sed -i.bak "s|repo-name: azure-function-app-boilerplate|repo-name: $REPO_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
     rm ".github/workflows/backend-integration-code_validation_and_docs.yml.bak"
     
     # Then rename file
@@ -131,7 +143,15 @@ if [ -f "azd-template.json" ]; then
 fi
 
 echo ""
+# 8. Remove the rename script from the newly created folder
+if [ -f "$NEW_NAME/rename-integration.sh" ]; then
+    rm "$NEW_NAME/rename-integration.sh"
+    echo "✓ Removed rename-integration.sh from $NEW_NAME/"
+fi
+
+echo ""
 echo "🎉 Successfully renamed integration to '$NEW_NAME'!"
+echo "Repository name set to: '$REPO_NAME'"
 echo ""
 echo "Next steps:"
 echo "1. cd $NEW_NAME/"
@@ -144,3 +164,5 @@ echo "- ${UPPER_NAME}_CLIENT_ID"
 echo "- ${UPPER_NAME}_TENANT_ID"
 echo "- ${UPPER_NAME}_SUBSCRIPTION_ID"
 echo "- ${UPPER_NAME}_LOCATION"
+echo ""
+echo "Note: The workflow files have been updated with repository name: '$REPO_NAME'"

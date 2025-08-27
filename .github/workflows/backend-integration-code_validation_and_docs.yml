@@ -23,6 +23,6 @@ jobs:
         app-name: backend-integration
         environment: dev
         work-dir: backend-integration
-        repo-name: ubc-backend
+        repo-name: azure-function-app-boilerplate
     secrets:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
