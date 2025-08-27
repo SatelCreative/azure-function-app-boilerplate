@@ -19,7 +19,7 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
    ```bash
    cd your-project-name-repository 
    azd init --template https://github.com/SatelCreative/azure-function-app-boilerplate.git
-   ./rename-integration.sh <APP-NAME> [REPO-NAME]
+   ./rename-integration.sh <APP-NAME> <REPO-NAME>
    
    ```
 
@@ -119,9 +119,9 @@ Configure your application in `backend-integration/infra/main.parameters.json`:
 
 1. **Rename the integration (optional but recommended):**
    ```bash
-   ./rename-integration.sh <APP-NAME> [REPO-NAME]
+   ./rename-integration.sh <APP-NAME> <REPO-NAME>
    # This renames backend-integration/ to <APP-NAME>/ and updates all references
-   # REPO-NAME is optional and defaults to 'azure-function-app-boilerplate'
+   # Both APP-NAME and REPO-NAME are required parameters
    ```
 
 2. **Install dependencies:**
@@ -243,9 +243,9 @@ This boilerplate provides a production-ready foundation for building Azure Funct
 
 1. **Rename the integration directory:**
    ```bash
-   ./rename-integration.sh your-integration-name [your-repo-name]
+   ./rename-integration.sh your-integration-name your-repo-name
    # This script will rename backend-integration/ and update all configuration files
-   # The repo-name parameter is optional and defaults to 'azure-function-app-boilerplate'
+   # Both integration-name and repo-name are required parameters
    ```
 
 2. **Update configuration files:**

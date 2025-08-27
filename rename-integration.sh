@@ -6,22 +6,22 @@
 
 set -e
 
-if [ $# -lt 1 ] || [ $# -gt 2 ]; then
-    echo "Usage: $0 <new-integration-name> [repo-name]"
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <new-integration-name> <repo-name>"
     echo ""
     echo "Parameters:"
     echo "  new-integration-name: The name for your new integration (required)"
-    echo "  repo-name:            The repository name (optional, defaults to azure-function-app-boilerplate)"
+    echo "  repo-name:            The repository name (required)"
     echo ""
     echo "Examples:"
-    echo "  $0 shopify-integration"
-    echo "  $0 shopify-integration my-custom-repo"
+    echo "  $0 shopify-integration my-shopify-repo"
     echo "  $0 payment-processor payment-backend"
+    echo "  $0 email-service email-backend"
     exit 1
 fi
 
 NEW_NAME="$1"
-REPO_NAME="${2:-azure-function-app-boilerplate}"  # Default to azure-function-app-boilerplate if not provided
+REPO_NAME="$2"
 
 # Validate the name format
 if ! [[ "$NEW_NAME" =~ ^[a-z][a-z0-9-]*[a-z0-9]$ ]]; then
