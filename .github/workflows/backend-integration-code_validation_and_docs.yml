@@ -1,6 +1,7 @@
 name: Backend Integration - Checks & documentation
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
         - 'backend-integration/**'
