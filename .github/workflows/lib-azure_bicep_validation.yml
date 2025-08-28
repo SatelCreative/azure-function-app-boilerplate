@@ -33,10 +33,13 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v4
 
-        - name: Azure CLI script
-          uses: azure/CLI@v2.1.0
-          with:
-            inlineScript: az config set bicep.use_binary_from_path=false && az bicep build -f ${{ inputs.work-dir }}/infra/main.bicep
+        - name: Setup Azure CLI
+          uses: azure/setup-cli@v3
+
+        - name: Validate Bicep
+          run: |
+            az config set bicep.use_binary_from_path=false
+            az bicep build -f ${{ inputs.work-dir }}/infra/main.bicep
 
         - name: Log in with Azure (Federated Credentials)
           if: ${{ env.AZURE_CLIENT_ID != '' }}
