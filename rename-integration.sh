@@ -6,13 +6,22 @@
 
 set -e
 
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <new-integration-name>"
-    echo "Example: $0 shopify-integration"
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <new-integration-name> <repo-name>"
+    echo ""
+    echo "Parameters:"
+    echo "  new-integration-name: The name for your new integration (required)"
+    echo "  repo-name:            The repository name (required)"
+    echo ""
+    echo "Examples:"
+    echo "  $0 shopify-integration my-shopify-repo"
+    echo "  $0 payment-processor payment-backend"
+    echo "  $0 email-service email-backend"
     exit 1
 fi
 
 NEW_NAME="$1"
+REPO_NAME="$2"
 
 # Validate the name format
 if ! [[ "$NEW_NAME" =~ ^[a-z][a-z0-9-]*[a-z0-9]$ ]]; then
@@ -21,6 +30,7 @@ if ! [[ "$NEW_NAME" =~ ^[a-z][a-z0-9-]*[a-z0-9]$ ]]; then
 fi
 
 echo "Renaming integration from 'backend-integration' to '$NEW_NAME'..."
+echo "Using repository name: '$REPO_NAME'"
 
 # 1. Rename the main folder
 if [ -d "backend-integration" ]; then
@@ -39,7 +49,9 @@ fi
 
 # 3. Update pyproject.toml
 if [ -f "$NEW_NAME/pyproject.toml" ]; then
+    # Replace either the original template syntax or the valid placeholder
     sed -i.bak "s|name = \"{{appName}}\"|name = \"$NEW_NAME\"|g" "$NEW_NAME/pyproject.toml"
+    sed -i.bak "s|name = \"app-name\"|name = \"$NEW_NAME\"|g" "$NEW_NAME/pyproject.toml"
     rm "$NEW_NAME/pyproject.toml.bak"
     echo "✓ Updated $NEW_NAME/pyproject.toml"
 fi
@@ -59,41 +71,69 @@ if [ -f "$NEW_NAME/webapp/main.py" ]; then
     echo "✓ Updated $NEW_NAME/webapp/main.py"
 fi
 
+# Update generate_openapi_docs.py
+if [ -f "$NEW_NAME/generate_openapi_docs.py" ]; then
+    sed -i.bak "s|filename='backend-integration'|filename='$NEW_NAME'|g" "$NEW_NAME/generate_openapi_docs.py"
+    sed -i.bak "s|title='Backend Integration - API'|title='$NEW_NAME - API'|g" "$NEW_NAME/generate_openapi_docs.py"
+    rm "$NEW_NAME/generate_openapi_docs.py.bak"
+    echo "✓ Updated $NEW_NAME/generate_openapi_docs.py"
+fi
+
 # 5. Clean up any extra workflow files and rename/update main workflow files
 UPPER_NAME=$(echo "$NEW_NAME" | tr '[:lower:]' '[:upper:]' | sed 's/-/_/g')
 
 # Remove any extra workflow files that shouldn't exist
-if [ -f ".github/workflows/new-app-azure-deploy.yml" ]; then
-    rm ".github/workflows/new-app-azure-deploy.yml"
+if [ -f ".github/workflows/new-app-azure_deploy.yml" ]; then
+    rm ".github/workflows/new-app-azure_deploy.yml"
     echo "✓ Removed extra new-app deployment workflow"
 fi
 
-if [ -f ".github/workflows/new-app-azure-bicep-validate.yml" ]; then
-    rm ".github/workflows/new-app-azure-bicep-validate.yml"
+if [ -f ".github/workflows/new-app-azure_bicep_validate.yml" ]; then
+    rm ".github/workflows/new-app-azure_bicep_validate.yml"
     echo "✓ Removed extra new-app validation workflow"
 fi
 
-if [ -f ".github/workflows/backend-integration-azure-deploy.yml" ]; then
+# Handle the main azure deployment workflow
+if [ -f ".github/workflows/backend-integration-azure_deploy.yml" ]; then
     # Update content first
-    sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-azure-deploy.yml"
-    sed -i.bak "s|BACKEND_INTEGRATION|${UPPER_NAME}|g" ".github/workflows/backend-integration-azure-deploy.yml"
-    sed -i.bak "s|Backend Integration|${NEW_NAME}|g" ".github/workflows/backend-integration-azure-deploy.yml"
-    rm ".github/workflows/backend-integration-azure-deploy.yml.bak"
+    sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-azure_deploy.yml"
+    sed -i.bak "s|BACKEND_INTEGRATION|${UPPER_NAME}|g" ".github/workflows/backend-integration-azure_deploy.yml"
+    sed -i.bak "s|Backend Integration|${NEW_NAME}|g" ".github/workflows/backend-integration-azure_deploy.yml"
+    rm ".github/workflows/backend-integration-azure_deploy.yml.bak"
     
     # Then rename file
-    mv ".github/workflows/backend-integration-azure-deploy.yml" ".github/workflows/$NEW_NAME-azure-deploy.yml"
+    mv ".github/workflows/backend-integration-azure_deploy.yml" ".github/workflows/$NEW_NAME-azure_deploy.yml"
     echo "✓ Updated and renamed deployment workflow"
 fi
 
-if [ -f ".github/workflows/backend-integration-azure-bicep-validate.yml" ]; then
+# Handle the azure bicep validation workflow
+if [ -f ".github/workflows/backend-integration-azure_bicep_validate.yml" ]; then
     # Update content first
-    sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-azure-bicep-validate.yml"
-    sed -i.bak "s|Backend Integration|${NEW_NAME}|g" ".github/workflows/backend-integration-azure-bicep-validate.yml"
-    rm ".github/workflows/backend-integration-azure-bicep-validate.yml.bak"
+    sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-azure_bicep_validate.yml"
+    sed -i.bak "s|Backend Integration|${NEW_NAME}|g" ".github/workflows/backend-integration-azure_bicep_validate.yml"
+    rm ".github/workflows/backend-integration-azure_bicep_validate.yml.bak"
     
     # Then rename file
-    mv ".github/workflows/backend-integration-azure-bicep-validate.yml" ".github/workflows/$NEW_NAME-azure-bicep-validate.yml"
+    mv ".github/workflows/backend-integration-azure_bicep_validate.yml" ".github/workflows/$NEW_NAME-azure_bicep_validate.yml"
     echo "✓ Updated and renamed validation workflow"
+fi
+
+# Handle the code validation and docs workflow
+if [ -f ".github/workflows/backend-integration-code_validation_and_docs.yml" ]; then
+    # Update content first - replace all instances of backend-integration
+    sed -i.bak "s|backend-integration|$NEW_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
+    # Update the workflow name/title
+    sed -i.bak "s|Backend Integration - Checks & documentation|$NEW_NAME - Checks & documentation|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
+    sed -i.bak "s|Backend Integration|$NEW_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
+    # Update any references to the reusable workflow file
+    sed -i.bak "s|backend-integration-dev-code_validation_and_docs.yml|$NEW_NAME-dev-code_validation_and_docs.yml|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
+    # Update the repo-name parameter
+    sed -i.bak "s|repo-name: azure-function-app-boilerplate|repo-name: $REPO_NAME|g" ".github/workflows/backend-integration-code_validation_and_docs.yml"
+    rm ".github/workflows/backend-integration-code_validation_and_docs.yml.bak"
+    
+    # Then rename file
+    mv ".github/workflows/backend-integration-code_validation_and_docs.yml" ".github/workflows/$NEW_NAME-code_validation_and_docs.yml"
+    echo "✓ Updated and renamed code validation and docs workflow"
 fi
 
 # 6. Update main README.md
@@ -113,7 +153,17 @@ if [ -f "azd-template.json" ]; then
 fi
 
 echo ""
+# 8. Remove the rename script from the newly created folder
+if [ -f "rename-integration.sh" ]; then
+    rm "rename-integration.sh"
+    rm -rf .git
+    rm README.md
+    echo "✓ Removed rename-integration.sh and .git from $NEW_NAME/"
+fi
+
+echo ""
 echo "🎉 Successfully renamed integration to '$NEW_NAME'!"
+echo "Repository name set to: '$REPO_NAME'"
 echo ""
 echo "Next steps:"
 echo "1. cd $NEW_NAME/"
@@ -126,3 +176,5 @@ echo "- ${UPPER_NAME}_CLIENT_ID"
 echo "- ${UPPER_NAME}_TENANT_ID"
 echo "- ${UPPER_NAME}_SUBSCRIPTION_ID"
 echo "- ${UPPER_NAME}_LOCATION"
+echo ""
+echo "Note: The workflow files have been updated with repository name: '$REPO_NAME'"

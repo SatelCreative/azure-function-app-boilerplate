@@ -16,7 +16,7 @@ concurrency:
   
 jobs:
   backend-integration-validation: 
-    uses: ./.github/workflows/lib-azure-bicep-validation.yml
+    uses: ./.github/workflows/lib-azure_bicep_validation.yml
     with:
       work-dir: backend-integration
     secrets:
