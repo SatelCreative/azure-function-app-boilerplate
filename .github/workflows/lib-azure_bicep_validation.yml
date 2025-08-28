@@ -33,15 +33,13 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v4
 
-        - name: Azure CLI script
-          uses: azure/CLI@v2.1.0
-          with:
-            inlineScript: az config set bicep.use_binary_from_path=false && az bicep build -f ${{ inputs.work-dir }}/infra/main.bicep
-
-        - name: Log in with Azure (Federated Credentials)
-          if: ${{ env.AZURE_CLIENT_ID != '' }}
+            # Install Azure CLI only on GitHub-hosted runners
+        - name: Install Azure CLI (GitHub-hosted only)
+          if: ${{ runner.os == 'Linux' && startsWith(runner.name, 'GitHub Actions') }}
           run: |
-            azd auth login \
-              --client-id "$AZURE_CLIENT_ID" \
-              --federated-credential-provider "github" \
-              --tenant-id "$AZURE_TENANT_ID"
+            curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+        - name: Validate Bicep
+          run: |
+            az config set bicep.use_binary_from_path=false
+            az bicep build -f ${{ inputs.work-dir }}/infra/main.bicep

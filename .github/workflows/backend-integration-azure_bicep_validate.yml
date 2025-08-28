@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      
     paths:
       - 'backend-integration/**'
       - '.github/workflows/lib-azure-bicep-validation.yml'
