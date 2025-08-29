@@ -2,6 +2,12 @@ name: Backend Integration - Checks & documentation
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+        - 'backend-integration/**'
+        - '.github/workflows/backend-integration-dev-code_validation_and_docs.yml'
   pull_request:
     paths:
         - 'backend-integration/**'
