@@ -21,6 +21,8 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
  
    azd init --template https://github.com/SatelCreative/azure-function-app-boilerplate.git
 
+   ? Enter a unique environment name: [? for help] <APP-NAME>
+
    ./rename-integration.sh <APP-NAME> <REPO-NAME>
    
    ```
@@ -30,10 +32,13 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
    then delete this empoty `.github` directory.
 
 2. **Configure your environment:**
+cd to yoy app folder
    ```bash
    # Copy the example configuration
-   cp backend-integration/config.sh.example backend-integration/config.sh
-   cp backend-integration/local.settings.json.example backend-integration/local.settings.json
+
+   cp config.sh.example config.sh
+
+   cp local.settings.json.example local.settings.json
    
    # Edit the configuration files with your specific values
    ```
@@ -41,6 +46,11 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
 3. **Deploy to Azure:**
    ```bash
    azd up
+
+   ? Enter a unique environment name: <APP-NAME-ENV>
+   ? Select an Azure Subscription to use:  <SELECT-PROPER-SUBCRIPTION>
+   ? Enter a value for the 'location' infrastructure parameter: <SELECT-PROPER-REGION>
+   
    ```
 
    This will:
