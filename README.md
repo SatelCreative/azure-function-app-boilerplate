@@ -30,9 +30,14 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
    cp local.settings.json.example local.settings.json
    # Edit configuration files
    ```
+4. **Set ENV variables
+   ```bash
+   echo "export AZURE_ENV_NAME=<"RESOURCE_GROUP-ENV>"     # e.g., 'rahul-shared-dev'"
+   echo "export AZURE_SERVICE_NAME=<"$NEW_NAME">                  # Unique service name"
+   echo "export AZURE_LOCATION=<"Location">                       # Your preferred region"
+   ```
 
-
-4. **Deploy apps using the deploy.sh script:**
+5. **Deploy apps using the deploy.sh script:**
    ```bash
    # Deploy your first app
    ./deploy.sh my-first-app
