@@ -17,7 +17,7 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
 
 1. **Get the template:**
    ```bash
-   azd init --template https://github.com/Rahul-Personal-lists/template.git
+   azd init --template https://github.com/SatelCreative/azure-function-app-boilerplate.git
    ```
 2. **Rename the app:**
 ```bash
