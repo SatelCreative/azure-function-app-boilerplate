@@ -86,17 +86,17 @@ else
                 echo "📡 Found git remote: $ORIGIN_URL"
                 
                 # Check if this looks like a template repository
-                if [[ "$ORIGIN_URL" == *"template"* ]] || [[ "$ORIGIN_URL" == *"rahul"* ]]; then
+                if [[ "$ORIGIN_URL" == *"template"* ]] || [[ "$ORIGIN_URL" == *"SatelCreative"* ]]; then
                     TEMPLATE_URL="$ORIGIN_URL"
                     echo "📡 Using template from current repository: $TEMPLATE_URL"
                 else
                     echo "⚠️  Current repository doesn't appear to be a template repository"
-                    TEMPLATE_URL="https://github.com/Rahul-Personal-lists/template.git"
+                    TEMPLATE_URL="https://github.com/SatelCreative/azure-function-app-boilerplate.git"
                     echo "📡 Using default template: $TEMPLATE_URL"
                 fi
             else
                 # Default template URL - you can change this to your template repo
-                TEMPLATE_URL="https://github.com/Rahul-Personal-lists/template.git"
+                TEMPLATE_URL="https://github.com/SatelCreative/azure-function-app-boilerplate.git"
                 echo "📡 Using default template: $TEMPLATE_URL"
             fi
         fi
