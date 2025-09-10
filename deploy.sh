@@ -68,7 +68,7 @@ else
     
     # Copy all necessary files from backend-integration template
     if [ -d "backend-integration" ]; then
-        cp -r backend-integration/* "$APP_FOLDER/"
+        cp -r backend-integration/. "$APP_FOLDER/"
         echo "✅ Copied template files from local backend-integration to $APP_FOLDER/"
     else
         echo "📥 backend-integration not found locally. Fetching from template repository..."
@@ -107,7 +107,7 @@ else
         
         if git clone --depth 1 "$TEMPLATE_URL" "$TEMP_DIR"; then
             if [ -d "$TEMP_DIR/backend-integration" ]; then
-                cp -r "$TEMP_DIR/backend-integration"/* "$APP_FOLDER/"
+                cp -r "$TEMP_DIR/backend-integration"/. "$APP_FOLDER/"
                 echo "✅ Copied template files from repository to $APP_FOLDER/"
             else
                 echo "❌ backend-integration folder not found in template repository"
@@ -121,6 +121,19 @@ else
             exit 1
         fi
     fi
+    
+    # Verify the app folder was created successfully and has the necessary files
+    if [ ! -f "$APP_FOLDER/function_app.py" ]; then
+        echo "❌ Failed to create app folder properly. Missing function_app.py"
+        exit 1
+    fi
+    
+    if [ ! -d "$APP_FOLDER/infra" ]; then
+        echo "❌ Failed to create app folder properly. Missing infra directory"
+        exit 1
+    fi
+    
+    echo "✅ App folder created successfully with all necessary files"
 fi
 
 # Set up azd environment - use environment name from environment or prompt user
