@@ -18,6 +18,8 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
 1. **Get the template:**
    ```bash
    azd init --template https://github.com/SatelCreative/azure-function-app-boilerplate.git
+
+   ? Enter a unique environment name: <APP-NAME>
    ```
 2. **Rename the app:**
 ```bash
@@ -26,9 +28,7 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
 3. **Configure environment:**
    ```bash
    cd <APP-NAME> 
-   cp config.sh.example config.sh
-   cp local.settings.json.example local.settings.json
-   # Edit configuration files
+   # Edit configuration files (config.sh and local.settings.json are auto-created)
    ```
 4. **Set ENV variables**
    ```bash

@@ -134,6 +134,18 @@ else
     fi
     
     echo "✅ App folder created successfully with all necessary files"
+    
+    # Set up configuration files
+    echo "🔧 Setting up configuration files..."
+    if [ -f "$APP_FOLDER/config.sh.example" ]; then
+        cp "$APP_FOLDER/config.sh.example" "$APP_FOLDER/config.sh"
+        echo "✅ Created config.sh from config.sh.example"
+    fi
+    
+    if [ -f "$APP_FOLDER/local.settings.json.example" ]; then
+        cp "$APP_FOLDER/local.settings.json.example" "$APP_FOLDER/local.settings.json"
+        echo "✅ Created local.settings.json from local.settings.json.example"
+    fi
 fi
 
 # Set up azd environment - use environment name from environment or prompt user
