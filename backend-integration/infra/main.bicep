@@ -12,9 +12,18 @@ param location string
 @description('Application settings for the Function App')
 param appSettings object = {}
 
+@description('Service name for unique resource naming within shared resource group')
+param serviceName string = 'api'
+
+// Use the service name for azd identification - each app gets unique service name
+// azd expects to find resources tagged with the service name from azure.yaml
+var azdServiceName = serviceName
+
 var resourceToken = toLower(uniqueString(subscription().id, name, location))
+var serviceResourceToken = toLower(uniqueString(subscription().id, name, serviceName, location))
 var tags = { 'azd-env-name': name }
 
+// Create or use existing resource group
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: name
   location: location
@@ -22,34 +31,35 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 var prefix = '${name}-${resourceToken}'
+var servicePrefix = '${serviceName}-${serviceResourceToken}'
 
 module monitoring './core/monitor/monitoring.bicep' = {
-  name: 'monitoring'
+  name: '${serviceName}-monitoring'
   scope: resourceGroup
   params: {
     location: location
     tags: tags
-    logAnalyticsName: '${prefix}-logworkspace'
-    applicationInsightsName: '${prefix}-appinsights'
-    applicationInsightsDashboardName: '${prefix}-appinsights-dashboard'
+    logAnalyticsName: '${servicePrefix}-logworkspace'
+    applicationInsightsName: '${servicePrefix}-appinsights'
+    applicationInsightsDashboardName: '${servicePrefix}-appinsights-dashboard'
   }
 }
 
 module storageAccount 'core/storage/storage-account.bicep' = {
-  name: 'storage'
+  name: '${serviceName}-storage'
   scope: resourceGroup
   params: {
-    name: '${toLower(take(replace(prefix, '-', ''), 17))}storage'
+    name: '${toLower(take(replace(servicePrefix, '-', ''), 17))}storage'
     location: location
     tags: tags
   }
 }
 
 module appServicePlan './core/host/appserviceplan.bicep' = {
-  name: 'appserviceplan'
+  name: '${serviceName}-appserviceplan'
   scope: resourceGroup
   params: {
-    name: '${prefix}-plan'
+    name: '${servicePrefix}-plan'
     location: location
     tags: tags
     sku: {
@@ -60,12 +70,12 @@ module appServicePlan './core/host/appserviceplan.bicep' = {
 }
 
 module functionApp 'core/host/functions.bicep' = {
-  name: 'function'
+  name: '${serviceName}-function'
   scope: resourceGroup
   params: {
-    name: '${prefix}-function-app'
+    name: '${servicePrefix}-function-app'
     location: location
-    tags: union(tags, { 'azd-service-name': 'api' })
+    tags: union(tags, { 'azd-service-name': azdServiceName })
     alwaysOn: false
     appSettings: union(
       {
@@ -82,7 +92,7 @@ module functionApp 'core/host/functions.bicep' = {
 }
 
 module diagnostics 'core/host/app-diagnostics.bicep' = {
-  name: '${name}-functions-diagnostics'
+  name: '${serviceName}-functions-diagnostics'
   scope: resourceGroup
   params: {
     appName: functionApp.outputs.name

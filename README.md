@@ -13,51 +13,47 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
 - [Python 3.12+](https://www.python.org/downloads/)
 - [Poetry](https://python-poetry.org/docs/#installation) (for local development)
 
-### Using this Template
+### 🎯 Initialization and Deployment
 
-1. **Initialize a new project from this template:**
+1. **Get the template:**
    ```bash
-   cd your-project-name-repository
- 
-   azd init --template https://github.com/SatelCreative/azure-function-app-boilerplate.git
-
-   ? Enter a unique environment name: [? for help] <APP-NAME>
-
-   ./rename-integration.sh <APP-NAME> <REPO-NAME>
-   
+   azd init --template https://github.com/Rahul-Personal-lists/template.git
    ```
-   > **Note**: After running the script, you'll need to 
-   manually move the files `.github` folder from your 
-   new integration directory back to the root of your project, 
-   then delete this empoty `.github` directory.
-
-2. **Configure your environment:**
-cd to yoy app folder
+2. **Rename the app:**
+```bash
+  ./rename-integration.sh <APP-NAME> <REPO-NAME>  
+  ```
+3. **Configure environment:**
    ```bash
-   # Copy the example configuration
-
+   cd <APP-NAME> 
    cp config.sh.example config.sh
-
    cp local.settings.json.example local.settings.json
-   
-   # Edit the configuration files with your specific values
+   # Edit configuration files
    ```
-
-3. **Deploy to Azure:**
+4. **Set ENV variables
    ```bash
-   azd up
-
-   ? Enter a unique environment name: <APP-NAME-ENV>
-   ? Select an Azure Subscription to use:  <SELECT-PROPER-SUBCRIPTION>
-   ? Enter a value for the 'location' infrastructure parameter: <SELECT-PROPER-REGION>
-   
+   echo "export AZURE_ENV_NAME=<"RESOURCE_GROUP-ENV>"     # e.g., 'rahul-shared-dev'"
+   echo "export AZURE_SERVICE_NAME=<"$NEW_NAME">                  # Unique service name"
+   echo "export AZURE_LOCATION=<"Location">                       # Your preferred region"
    ```
 
-   This will:
-   - Create a new resource group
-   - Deploy all Azure resources (Functions, Storage, App Insights, etc.)
-   - Deploy your application code
-   - Configure all necessary app settings
+5. **Deploy apps using the deploy.sh script:**
+   ```bash
+   # Deploy your first app
+   ./deploy.sh my-first-app
+
+   # Deploy additional apps to the same resource group
+   ./deploy.sh my-second-app
+   ./deploy.sh my-third-app
+   ```
+
+The `deploy.sh` script will:
+- ✅ Automatically create app folders
+- ✅ Set up Azure environments
+- ✅ Handle all configuration
+- ✅ Deploy to Azure
+- ✅ Support multiple apps in the same resource group
+
 
 ## 🏗️ What's Included
 
@@ -164,7 +160,25 @@ Configure your application in `backend-integration/infra/main.parameters.json`:
 
 ## 🚀 Deployment
 
-### Using Azure Developer CLI (Local)
+### Using deploy.sh (Recommended)
+
+The `deploy.sh` script provides zero-config deployment:
+
+```bash
+# Deploy your first app
+./deploy.sh my-first-app
+
+# Deploy additional apps to the same resource group
+./deploy.sh my-second-app
+```
+
+**Environment Variables (Optional):**
+- `AZURE_ENV_NAME`: Environment name (becomes resource group name)
+- `AZURE_LOCATION`: Azure region (e.g., `eastus`)
+- `AZURE_SUBSCRIPTION_ID`: Your Azure subscription ID
+- `TEMPLATE_URL`: Template repository URL (auto-detected if not set)
+
+### Using Azure Developer CLI (Manual)
 
 ```bash
 # Deploy everything (infrastructure + code)
@@ -176,6 +190,44 @@ azd deploy
 # Deploy only infrastructure changes  
 azd provision
 ```
+
+### Resources Created
+
+When you deploy, the following Azure resources are created:
+
+- **Resource Group**: Named after your environment (e.g., `my-env`)
+- **Function App**: Python 3.12 runtime on consumption plan
+- **Storage Account**: Required for Azure Functions
+- **Application Insights**: Monitoring and logging
+- **Log Analytics Workspace**: Centralized logging
+- **App Service Plan**: Consumption (Y1) tier
+
+### Multi-App Deployment
+
+This template supports deploying multiple applications to the same resource group. Each application will have unique resource names based on the `AZURE_SERVICE_NAME` parameter.
+
+**Example: Deploy Two Apps to Same Resource Group**
+
+```bash
+# Deploy first app
+./deploy.sh app1
+
+# Deploy second app to same resource group
+./deploy.sh app2
+```
+
+**Resource Naming Convention:**
+- **Resource Group**: `{AZURE_ENV_NAME}` (shared)
+- **Function App**: `{AZURE_SERVICE_NAME}-{hash}-function-app`
+- **Storage Account**: `{AZURE_SERVICE_NAME}{hash}storage`
+- **App Service Plan**: `{AZURE_SERVICE_NAME}-{hash}-plan`
+- **Application Insights**: `{AZURE_SERVICE_NAME}-{hash}-appinsights`
+
+**Benefits:**
+- **Cost Efficiency**: Share monitoring and logging resources
+- **Centralized Management**: All related apps in one resource group
+- **Unique Resources**: Each app has its own compute and storage
+- **Easy Cleanup**: Delete entire resource group to remove all apps
 
 ## Azure DevOps Setup
 
@@ -303,15 +355,33 @@ Access your monitoring data:
 
 ### Common Issues
 
-1. **Deployment fails with permissions error:**
+1. **"resource not found: unable to find a resource tagged with 'azd-service-name: ...'":**
+   - Use `./deploy.sh <app-name>` for automatic configuration
+   - The script handles all service naming automatically
+
+2. **Deployment fails with permissions error:**
    - Ensure your Azure account has Contributor role on the subscription
    - Check that azd is authenticated: `azd auth login`
 
-2. **Function app not starting:**
+3. **Function app not starting:**
    - Check Application Insights logs for detailed error messages
    - Verify all required app settings are configured
 
-3. **Local development issues:**
+4. **Multi-app deployment issues:**
+   - Use `./deploy.sh <app-name>` for each app - it handles everything automatically
+   - Each app gets its own folder and unique service name
+   - All apps share the same resource group for cost efficiency
+
+5. **Local development issues:**
    - Ensure Azure Functions Core Tools are installed
    - Check that `local.settings.json` is properly configured
+
+6. **Template URL issues:**
+   - Set `TEMPLATE_URL` environment variable if auto-detection fails
+   - Or run: `TEMPLATE_URL='your-url' ./deploy.sh <app-name>`
+
+### Helper Scripts
+
+- `./deploy.sh <app-name>` - **Primary deployment method** - Zero-config deployment script
+- `./rename-integration.sh <new-name> <repo-name>` - Rename integration folder (for manual setup)
 
