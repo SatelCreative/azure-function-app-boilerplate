@@ -86,7 +86,7 @@ else
                 echo "📡 Found git remote: $ORIGIN_URL"
                 
                 # Check if this looks like a template repository
-                if [[ "$ORIGIN_URL" == *"template"* ]] || [[ "$ORIGIN_URL" == *"SatelCreative"* ]]; then
+                if [[ "$ORIGIN_URL" == *"azure-function-app-boilerplate"* ]] || [[ "$ORIGIN_URL" == *"SatelCreative"* ]]; then
                     TEMPLATE_URL="$ORIGIN_URL"
                     echo "📡 Using template from current repository: $TEMPLATE_URL"
                 else
