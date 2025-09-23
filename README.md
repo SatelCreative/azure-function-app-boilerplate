@@ -36,7 +36,7 @@ A comprehensive Azure Function App boilerplate with Shopify integration, FastAPI
    export AZURE_SERVICE_NAME=<APP-NAME>                 
    export AZURE_LOCATION=<REGION>     
    ```
-Note: You can also add these variables in config.sh and do `source config.sh` rather than exporting like above
+**Note:** You can also add these variables in config.sh and do `source config.sh` rather than exporting as shown above
 
 5. **Deploy apps using the deploy.sh script:**
    ```bash
